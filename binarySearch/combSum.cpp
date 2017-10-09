@@ -51,6 +51,47 @@ int combMin(array<int, 3> nums, int target) {
   return dp[target];
 }
 
+// leetcode 279
+int numSquares(int n) {
+  if (n <= 0)
+    return 0;
+
+  queue<int> que;
+  int table[n + 1] = {};
+
+  for (int i = 1; i * i <= n; i ++) {
+    que.push(i * i);
+    table[i * i] = 1;
+  }
+
+  if (table[n] == 1)
+    return 1;
+
+  int step = 1;
+  while (!que.empty()) {
+    step ++;
+    int num_cur = que.size();
+
+    for (int i = 1; i <= num_cur; i ++) {
+      int cur = que.front();
+      que.pop();
+
+      for (int j = 1; j * j <= n; j ++) {
+        int val = cur + j * j;
+        if (val == n) return step;
+        if (val > n) break;
+
+        if (val < n && table[val] == 0) {
+          que.push(val);
+          table[val] = step;
+        }  // end if
+      }  // end inner for
+
+    }  // end outer for
+  }  // end while
+
+  return 0;
+}
 
 int main(int argv, char**argc) {
   array<int, 3> num = {1, 2, 5};
