@@ -76,6 +76,42 @@ int longestValid(string& str) {
 
 }
 
+// Leetcode 241: add parentheses, divide and conquer problem
+unordered_map<string, vector<int>> hash;
+vector<int> diffWaysToCompute(string input) {
+  vector<int> res;
+  if (hash.count(input) > 0)
+    return hash[input];
+
+  for (int i = 0; i < input.size(); i ++) {
+    char cur = input.at(i);
+    if (cur != '+' && cur != '-' && cur != '*')
+      continue;
+
+    vector<int> pre = diffWaysToCompute(input.substr(0, i));
+    vector<int> beh = diffWaysToCompute(input.substr(i + 1));
+
+    for (int j1 = 0; j1 < pre.size(); j1 ++) {
+      for (int j2 = 0; j2 < beh.size(); j2 ++) {
+        if (cur == '+')
+          res.push_back(pre.at(j1) + beh.at(j2));
+
+        if (cur == '-')
+          res.push_back(pre.at(j1) - beh.at(j2));
+
+        if (cur == '*')
+          res.push_back(pre.at(j1) * beh.at(j2));
+      }  // end inner for
+    }  // end outer for
+  }
+
+  if (res.empty())
+    res.push_back(stoi(input));
+  hash[input] = res;
+
+  return res;
+}
+
 int main(int argc, char**argv) {
   string str = ")()()(";
 
