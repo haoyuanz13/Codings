@@ -32,10 +32,56 @@ int longestLength(vector<int> nums) {
   return max_len;
 }
 
+// longest consecutive sequence, the array is out of order
+// leetcode 128
+int longestConsecutive(vector<int>& nums) {
+  if (nums.empty() || nums.size() < 2)
+    return nums.size();
+
+  // the key is element in the array, value is their consecutive length
+  unordered_map<int, int> numMap;
+
+  for (int i = 0; i < nums.size(); i ++)
+    numMap[nums[i]] = 1;
+
+  int maxlen = 0;
+
+  for (int i = 0; i < nums.size(); i ++) {
+    if (!(numMap.count(nums[i]) > 0))
+      continue;
+
+    int curlen = 1;
+    int temp1 = nums[i] + 1;
+    int temp2 = nums[i] - 1;
+
+    // traverse larger value side
+    while (numMap.count(temp1) > 0) {
+      curlen += 1;
+      numMap.erase(temp1);  // remove element to speed up searching
+
+      temp1 ++;
+    }
+
+    while (numMap.count(temp2) > 0) {
+      curlen += 1;
+      numMap.erase(temp2);
+
+      temp2 --;
+    }
+
+    // remove the center one
+    numMap.erase(nums[i]);
+
+    maxlen = (maxlen < curlen)? curlen : maxlen;
+  }
+
+  return maxlen;
+
+}
 
 int main(int agrc, char** argv) {
-  vector<int> nums {10, 9, 2, 5, 3, 7, 101, 18};
-  cout << longestLength(nums) << endl;
+  vector<int> nums {100, 4, 200, 1, 3, 2};
+  cout << longestConsecutive(nums) << endl;
 
   return 0;
 }
