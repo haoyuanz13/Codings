@@ -52,7 +52,7 @@ bool searchWithDup(vector<int>& nums, int target){
       return true;
 
     else if (nums[m] < nums[r]) {
-      if (target > nums[m] && nums[m] <= nums[r])
+      if (target > nums[m] && target <= nums[r])
         l = m + 1;
       else
         r = m - 1;
