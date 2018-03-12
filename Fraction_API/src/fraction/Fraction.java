@@ -3,6 +3,7 @@ package fraction;
  * Fraction Class
  * @author Haoyuan Zhang
  */
+
 public class Fraction implements Comparable<Object>{
 	private int nume;
 	private int deno;
