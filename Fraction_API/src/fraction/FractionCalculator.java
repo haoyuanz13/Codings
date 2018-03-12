@@ -6,12 +6,12 @@ import java.util.Scanner;
  * @author Haoyuan Zhang
  */
 public class FractionCalculator {
-  Scanner scanner = new Scanner(System.in);	
+  Scanner scanner = new Scanner(System.in); 
   public static void main(String args[]) {
-    new FractionCalculator().run();    	
+    new FractionCalculator().run();     
   }
 
-	
+  
   /**
    * Plays a role as main program.<p> 
    * Based on input instruction, do corresponding calculation.<p>
@@ -29,101 +29,104 @@ public class FractionCalculator {
 
       if (operate.isEmpty() || !valid(operate)){                             // test the input form
         System.out.println("Your command is illegal. please input again.");  // if input form is illegal, show warning and ask for new input
-	continue;
+        continue;
       }
 
       if (operate.equals("q")){                                              // the instruction of quitting calculator
         quit();
-	break;
+        break;
       } 
 
       try{
         char command = operate.charAt(0);                                  // based on command do different operations 
-	switch(command) {
-	case 'a': cur = abs(cur);
-	break;
-	
-	case 'c': cur = clear();
-	break;
-	
-	case 'i': cur = invert(cur);
-	break;
-	
-	case 's': cur = replace(operate.substring(2));
-	break;
-	
-	case '+': cur = add(cur, operate.substring(2));
-	break;
-	
-	case '-': cur = sub(cur, operate.substring(2));
-	break;
-	
-	case '*': cur = multi(cur, operate.substring(2));
-	break;
-	
-	case '/': cur = div(cur, operate.substring(2));
-	break;        
+        switch(command) {
+          case 'a': cur = abs(cur);
+          break;
+        
+          case 'c': cur = clear();
+          break;
+        
+          case 'i': cur = invert(cur);
+          break;
+        
+          case 's': cur = replace(operate.substring(2));
+          break;
+        
+          case '+': cur = add(cur, operate.substring(2));
+          break;
+        
+          case '-': cur = sub(cur, operate.substring(2));
+          break;
+        
+          case '*': cur = multi(cur, operate.substring(2));
+          break;
+        
+          case '/': cur = div(cur, operate.substring(2));
+          break;        
         }  
       }
+      
       catch(ArithmeticException e){
-	System.out.println("Illegal operations! Please check again.");
+        System.out.println("Illegal operations! Please check again.");
       }
+
       finally{
-	System.out.println("current result is: "+ cur);   	
-      }        	
+        System.out.println("current result is: "+ cur);     
+      }         
     }    
   }
-	
+  
   /**
    * Test whether input instruction is <b>legal</b> or not.
    * @param ope Represents user's instruction.
    * @return True if command is legal.<p> 
    * False if command is illegal.
    */
-public boolean valid(String ope) { 
-  if(ope.length() < 1) return false;
+  public boolean valid(String ope) { 
+    if(ope.length() < 1) return false;
 
-  String opset = "aciqs+-*/";
-  int flag = opset.indexOf(ope.charAt(0));
-  if (flag == -1) return false;              // instructions that cannot be found in commands set
-  else if(flag >=0 && flag < 4){             // instructions that need only one command character
-    if (ope.length() > 1) return false;
-    else return true;
+    String opset = "aciqs+-*/";
+    int flag = opset.indexOf(ope.charAt(0));
+    if (flag == -1) return false;              // instructions that cannot be found in commands set
+    else if(flag >=0 && flag < 4){             // instructions that need only one command character
+      if (ope.length() > 1) return false;
+      else return true;
+    }
+    else{                                      // instructions that need one more characters after command character
+      if (ope.length() <= 2) return false;
+    }
+
+    if(!(ope.charAt(1) == ' ')) return false;  // no required white space after initial command character 
+    String sub = ope.substring(2);
+    sub = sub.trim();
+    sub += '*';                                // stop label to avoid index out of range
+    int ind = 0;
+    int count = 0;
+
+    if(sub.charAt(ind) == '-' || sub.charAt(ind) == '+') ind ++;   
+    while(sub.charAt(ind) >= '0' && sub.charAt(ind) <= '9'){
+      ind ++;
+      count ++;
+    }
+
+    if (count == 0) return false;                // no detect integer
+    if (ind == sub.length() - 1) return true;    // input is integer form without slash  
+
+    while (sub.charAt(ind) == ' ') ind ++;    
+    if (sub.charAt(ind) == '/') ind ++;
+
+    count = 0;
+    while (sub.charAt(ind) == ' ') ind ++;
+
+    if(sub.charAt(ind) == '-' || sub.charAt(ind) == '+') ind ++;
+    while(sub.charAt(ind) >= '0' && sub.charAt(ind) <= '9'){
+      ind ++;
+      count ++;
+    }
+    if (count == 0) return false;
+    return ind == sub.length() - 1;            // only index equals to last position of string means legal instruction
   }
-  else{                                      // instructions that need one more characters after command character
-    if (ope.length() <= 2) return false;
-  }
 
-  if(!(ope.charAt(1) == ' ')) return false;  // no required white space after initial command character 
-  String sub = ope.substring(2);
-  sub = sub.trim();
-  sub += '*';                                // stop label to avoid index out of range
-  int ind = 0;
-  int count = 0;
-
-  if(sub.charAt(ind) == '-' || sub.charAt(ind) == '+') ind ++;   
-  while(sub.charAt(ind) >= '0' && sub.charAt(ind) <= '9'){
-    ind ++;
-    count ++;
-  }
-
-  if (count == 0) return false;                // no detect integer
-  if (ind == sub.length() - 1) return true;    // input is integer form without slash  
-
-  while (sub.charAt(ind) == ' ') ind ++;		
-  if (sub.charAt(ind) == '/') ind ++;
-
-  count = 0;
-  while (sub.charAt(ind) == ' ') ind ++;
-
-  if(sub.charAt(ind) == '-' || sub.charAt(ind) == '+') ind ++;
-  while(sub.charAt(ind) >= '0' && sub.charAt(ind) <= '9'){
-    ind ++;
-    count ++;
-  }
-  if (count == 0) return false;
-  return ind == sub.length() - 1;            // only index equals to last position of string means legal instruction
-}
 
   /**
    * <b>Absolute value </b> of display fraction.
@@ -133,7 +136,7 @@ public boolean valid(String ope) {
   public Fraction abs(Fraction cur) {
     return cur.abs();
   }
-	
+  
   /**
    * <b>Clear</b> the calculator.
    * @return 0 which is the reset number of calculator. 
@@ -142,7 +145,7 @@ public boolean valid(String ope) {
     Fraction res = new Fraction(0);
     return res;
   }
-	
+  
   /**
    * <b>Invert</b> the currently display number.
    * @param cur Current display number;
@@ -150,7 +153,7 @@ public boolean valid(String ope) {
    * @exception ArithmeticException on cur equals to zero. 
    */
   public Fraction invert(Fraction cur) {
-    return cur.inverse();		
+    return cur.inverse();   
   }
 
   /**
@@ -162,7 +165,7 @@ public boolean valid(String ope) {
     Fraction n = normali(ope);
     return n;
   }
-	
+  
   /**
    * <b>Quit</b> the program.
    */
@@ -180,7 +183,7 @@ public boolean valid(String ope) {
     Fraction n = normali(ope);
     return cur.add(n);
   }
-	
+  
   /**
    * <b>Subtract</b> certain fraction from the number currently display.
    * @param cur Current display fraction represents subtractor.
@@ -200,9 +203,9 @@ public boolean valid(String ope) {
    */
   public Fraction multi(Fraction cur, String ope) {
     Fraction n = normali(ope);
-    return cur.multiply(n);		
+    return cur.multiply(n);   
   }
-	
+  
   /**
    * <b>Divide</b> the number currently display by certain fraction.
    * @param cur Current display fraction represents dividend. 
@@ -213,7 +216,7 @@ public boolean valid(String ope) {
     Fraction n = normali(ope);
     return cur.divide(n);
   }
-	
+  
   /**
    * <b>Normalized</b> fraction. 
    * @param ope Legal input fraction.
@@ -227,7 +230,7 @@ public boolean valid(String ope) {
         res = res + ope.charAt(ind);
     }
     Fraction n = new Fraction(res);
-    return n;		
+    return n;   
   }   
 
 }
