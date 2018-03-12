@@ -111,8 +111,10 @@ int trap(vector<int>& height) {
 
 } 
 
-int main(int argc, char** argv) {
-  vector<int> walls {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
-   
 
-}
+ 
+
+
+
+
+
